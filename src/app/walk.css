@@ -1,0 +1,438 @@
+/* 산책하는펫샵 전용 UI — 도그앤미/디어펫과 무관한 독립 스타일 */
+
+.walk-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(12px);
+  background: rgba(250, 246, 239, 0.88);
+  border-bottom: 1px solid var(--walk-line);
+}
+
+.walk-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+}
+
+.walk-logo {
+  font-family: "Noto Serif KR", Georgia, serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--walk-sage-deep);
+}
+
+.walk-nav {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.walk-nav a:hover {
+  color: var(--walk-sage);
+}
+
+.walk-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2.5rem;
+  align-items: center;
+  padding: 3.5rem 0 4rem;
+}
+
+@media (max-width: 860px) {
+  .walk-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+.walk-search {
+  display: flex;
+  margin-top: 1.5rem;
+  border: 1px solid var(--walk-line);
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--walk-shadow);
+}
+
+.walk-search input {
+  flex: 1;
+  border: 0;
+  padding: 0.95rem 1.2rem;
+  font-size: 1rem;
+  outline: none;
+}
+
+.walk-search button {
+  border: 0;
+  background: var(--walk-sage);
+  color: #fff;
+  padding: 0 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.walk-hero-photo {
+  border-radius: calc(var(--walk-radius) + 8px);
+  overflow: hidden;
+  box-shadow: var(--walk-shadow);
+  transform: rotate(1.5deg);
+}
+
+.walk-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 860px) {
+  .walk-tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.walk-tile {
+  background: var(--walk-paper);
+  border: 1px solid var(--walk-line);
+  border-radius: var(--walk-radius);
+  padding: 1.35rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.walk-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--walk-shadow);
+}
+
+.walk-tile strong {
+  display: block;
+  font-size: 1.15rem;
+  margin-bottom: 0.25rem;
+}
+
+.walk-friends {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .walk-friends {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.walk-friend-card {
+  background: #fff;
+  border-radius: var(--walk-radius);
+  overflow: hidden;
+  border: 1px solid var(--walk-line);
+}
+
+.walk-friend-card img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+.walk-friend-card div {
+  padding: 0.85rem 1rem 1rem;
+}
+
+.walk-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .walk-guide-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.walk-guide-card {
+  background: linear-gradient(180deg, #fff, var(--walk-sage-soft));
+  border-radius: var(--walk-radius);
+  padding: 1rem;
+  border: 1px solid var(--walk-line);
+}
+
+.walk-breed-row {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-snap-type: x mandatory;
+}
+
+.walk-breed-chip {
+  flex: 0 0 220px;
+  scroll-snap-align: start;
+  background: #fff;
+  border-radius: var(--walk-radius);
+  overflow: hidden;
+  border: 1px solid var(--walk-line);
+}
+
+.walk-breed-chip img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.walk-breed-chip div {
+  padding: 0.75rem 0.9rem;
+}
+
+.walk-cat-row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 860px) {
+  .walk-cat-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.walk-cat-feature {
+  position: relative;
+  border-radius: var(--walk-radius);
+  overflow: hidden;
+  min-height: 280px;
+}
+
+.walk-cat-stack {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.walk-cat-mini {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 0.85rem;
+  align-items: center;
+  background: #fff;
+  border-radius: var(--walk-radius);
+  padding: 0.65rem;
+  border: 1px solid var(--walk-line);
+}
+
+.walk-cat-mini img {
+  width: 96px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.walk-region-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.walk-region-pills a {
+  background: #fff;
+  border: 1px solid var(--walk-line);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.92rem;
+}
+
+.walk-adopt-band {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 760px) {
+  .walk-adopt-band {
+    grid-template-columns: 1fr;
+  }
+}
+
+.walk-adopt-card {
+  padding: 1.5rem;
+  border-radius: var(--walk-radius);
+  background: linear-gradient(135deg, #fff 0%, #f0f5ec 100%);
+  border: 1px solid var(--walk-line);
+}
+
+.walk-public-band {
+  background: #fff;
+  border: 1px solid var(--walk-line);
+  border-radius: var(--walk-radius);
+  padding: 1.25rem 1.5rem;
+}
+
+.walk-public-band small {
+  color: var(--walk-muted);
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.walk-footer {
+  margin-top: 3rem;
+  padding: 2rem 0 3rem;
+  border-top: 1px solid var(--walk-line);
+  color: var(--walk-muted);
+  font-size: 0.92rem;
+}
+
+/* Breed magazine page */
+.mag-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: end;
+  padding: 2.5rem 0 2rem;
+}
+
+@media (max-width: 860px) {
+  .mag-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mag-hero img {
+  border-radius: var(--walk-radius);
+  width: 100%;
+  aspect-ratio: 5/4;
+  object-fit: cover;
+}
+
+.mag-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 2rem 0;
+}
+
+@media (max-width: 760px) {
+  .mag-facts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.mag-fact {
+  background: #fff;
+  border: 1px solid var(--walk-line);
+  border-radius: 14px;
+  padding: 0.85rem;
+}
+
+.mag-fact span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--walk-muted);
+}
+
+.mag-prose {
+  background: #fff;
+  border-radius: var(--walk-radius);
+  border: 1px solid var(--walk-line);
+  padding: 1.5rem 1.65rem;
+  margin-bottom: 1.25rem;
+}
+
+.mag-prose h2 {
+  font-family: "Noto Serif KR", Georgia, serif;
+  font-size: 1.35rem;
+  margin: 0 0 0.75rem;
+}
+
+.mag-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mag-checklist li {
+  padding: 0.55rem 0;
+  border-bottom: 1px dashed var(--walk-line);
+}
+
+.mag-checklist li::before {
+  content: "✓ ";
+  color: var(--walk-sage);
+  font-weight: 700;
+}
+
+.mag-table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.mag-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.mag-table th,
+.mag-table td {
+  border: 1px solid var(--walk-line);
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+}
+
+.mag-table caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 700;
+  padding-bottom: 0.5rem;
+}
+
+.mag-related {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mag-related a {
+  background: var(--walk-sage-soft);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.9rem;
+}
+
+.mag-faq details {
+  background: #fff;
+  border: 1px solid var(--walk-line);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.mag-faq summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.filter-bar select,
+.filter-bar input {
+  border: 1px solid var(--walk-line);
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  background: #fff;
+}
+
+.breed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
