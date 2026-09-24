@@ -24,7 +24,8 @@ export const SITE = {
   ogImage: "https://image.cattery.co.kr/welshi/05.webp",
   imageBase: "https://image.cattery.co.kr",
   domain: "산책하는펫샵.siteblog.co.kr",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://산책하는펫샵.siteblog.co.kr",
+  /** canonical/OG — punycode (Node·Vercel 빌드 호환) */
+  siteUrl: (process.env.NEXT_PUBLIC_SITE_URL || "https://xn--2i0by3ib0hw6j.siteblog.co.kr").trim(),
   themeColor: "#eef5ea",
   naverSiteVerification: "",
 } as const;
