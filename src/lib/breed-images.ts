@@ -194,6 +194,49 @@ export function breedScatteredPhotos(breed: Breed, salt = "", place = ""): Scatt
   }));
 }
 
+export type GalleryLayout = "scatter" | "grid-2" | "grid-3" | "strip";
+
+export type PageGalleryPhoto = { src: string; alt: string; variant?: ScatteredPhoto["variant"] };
+
+export type PageGallery = {
+  layout: GalleryLayout;
+  photos: PageGalleryPhoto[];
+  /** scatter 레이아웃일 때 섹션 인덱스마다 삽입할 사진 번호 */
+  scatterAt: number[];
+  /** grid/strip 갤러리 블록을 넣을 섹션 인덱스 */
+  blockInsertAt: number;
+};
+
+/** 페이지마다 3~5장, 레이아웃·배치를 deterministic 랜덤 */
+export function breedPageGallery(breed: Breed, salt = "", place = ""): PageGallery {
+  const rng = mulberry32(hashSlug(`${breed.slug}|${salt}|page-gallery`) ^ 0x5f3759df);
+  const count = 3 + Math.floor(rng() * 3);
+  const layouts: GalleryLayout[] = ["scatter", "grid-2", "grid-3", "strip"];
+  const layout = layouts[Math.floor(rng() * layouts.length)];
+  const images = pickBreedImages(breed, count + 3, `${salt}|page-gallery`);
+  const label = place ? `${place} ${breed.name}` : breed.name;
+  const variants: ScatteredPhoto["variant"][] = ["wide", "aside", "inline", "wide", "inline"];
+  const photos = images.slice(0, count).map((src, i) => ({
+    src,
+    alt: `${label} 사진 ${i + 1}`,
+    variant: variants[i % variants.length],
+  }));
+
+  const scatterAt: number[] = [];
+  let blockInsertAt = 1;
+  if (layout === "scatter") {
+    let at = 1 + Math.floor(rng() * 2);
+    for (let i = 0; i < photos.length; i++) {
+      scatterAt.push(at);
+      at += 2 + Math.floor(rng() * 2);
+    }
+  } else {
+    blockInsertAt = 1 + Math.floor(rng() * 3);
+  }
+
+  return { layout, photos, scatterAt, blockInsertAt };
+}
+
 export function breedPhotos(breed: Breed, salt = ""): BreedPhotos {
   const urls = pickBreedImages(breed, 16, salt);
   return {

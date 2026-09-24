@@ -27,7 +27,15 @@ export const SITE = {
   /** canonical/OG — punycode (Node·Vercel 빌드 호환) */
   siteUrl: (process.env.NEXT_PUBLIC_SITE_URL || "https://xn--2i0by3ib0hw6j.siteblog.co.kr").trim(),
   themeColor: "#eef5ea",
-  naverSiteVerification: "",
+  naverSiteVerification: "87b52b163cf46a5bf7451d7fd0f9560d0453e605",
+  phones: {
+    adoption: { label: "분양문의", number: "0505-300-7779" },
+    surrender: { label: "파양입소문의", number: "0505-707-0401" },
+  },
 } as const;
 
 export const CTA_LABEL = "입양·분양 상담 안내";
+
+export function phoneToTel(number: string): string {
+  return `tel:${number.replace(/[^\d+]/g, "")}`;
+}

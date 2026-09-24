@@ -2,7 +2,7 @@ import type { Breed } from "./breeds";
 import { relatedBreeds } from "./breeds";
 import { breedPath } from "./breed-paths";
 import { breedTraits } from "./breed-filters";
-import { breedPhotos } from "./breed-images";
+import { breedPageGallery, breedPhotos, type PageGallery } from "./breed-images";
 import { layoutVariantFor, sectionsForVariant, type SectionKey } from "./layout-variants";
 import { buildLocalRegionFacts, type LocalRegionFacts } from "./local-region-facts";
 import { displaySido, neighborSigungus } from "./korea-regions";
@@ -18,6 +18,7 @@ export type SanchackPageContent = {
   enc: ReturnType<typeof getSanchackEncyclopedia>;
   facts: FactCard[];
   photos: ReturnType<typeof breedPhotos>;
+  gallery: PageGallery;
   localFacts: LocalRegionFacts;
   variant: ReturnType<typeof layoutVariantFor>;
   sections: SectionKey[];
@@ -47,12 +48,13 @@ export function buildSanchackContent(
   dong?: string
 ): SanchackPageContent {
   const enc = getSanchackEncyclopedia(breed);
-  const place = placeLabel(sido, sigungu, dong);
   const hasRegion = Boolean(sido || sigungu || dong);
   const urlKey = [breed.slug, sido, sigungu, dong].filter(Boolean).join("|");
   const variant = layoutVariantFor(urlKey);
   const traits = breedTraits(breed);
   const photos = breedPhotos(breed, urlKey);
+  const place = placeLabel(sido, sigungu, dong);
+  const gallery = breedPageGallery(breed, urlKey, place);
 
   let regionIntro: string | undefined;
   if (sigungu && sido) {
@@ -75,6 +77,7 @@ export function buildSanchackContent(
       { label: "털·외모", value: breed.coat },
     ],
     photos,
+    gallery,
     localFacts: buildLocalRegionFacts(breed, sido, sigungu, dong),
     variant,
     sections: sectionsForVariant(variant),

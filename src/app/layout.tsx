@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import ContactBar from "./components/ContactBar";
 import SiteFooter from "./components/SiteFooter";
 import SiteHeader from "./components/SiteHeader";
 import "./globals.css";
@@ -70,11 +71,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;800&display=swap"
           rel="stylesheet"
         />
+        {SITE.naverSiteVerification ? (
+          <meta name="naver-site-verification" content={SITE.naverSiteVerification} />
+        ) : null}
       </head>
       <body>
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />
+        <ContactBar />
       </body>
     </html>
   );
