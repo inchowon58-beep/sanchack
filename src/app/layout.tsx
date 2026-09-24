@@ -6,8 +6,17 @@ import "./walk.css";
 import { SITE } from "@/lib/site";
 import { publicOrigin } from "@/lib/public-url";
 
+function metadataOrigin(raw: string): string {
+  const trimmed = raw.trim();
+  try {
+    return new URL(trimmed).origin;
+  } catch {
+    return "https://xn--2i0by3ib0hw6j.siteblog.co.kr";
+  }
+}
+
 export async function generateMetadata(): Promise<Metadata> {
-  const origin = await publicOrigin();
+  const origin = metadataOrigin(await publicOrigin());
   return {
     metadataBase: new URL(origin),
     title: {
