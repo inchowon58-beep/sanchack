@@ -9,6 +9,14 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
+const envLocal = path.join(ROOT, ".env.local");
+if (fs.existsSync(envLocal)) {
+  for (const line of fs.readFileSync(envLocal, "utf8").split(/\r?\n/)) {
+    const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
+  }
+}
+
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
   console.error("GEMINI_API_KEY가 없습니다. .env.local에 설정하거나 seed 스크립트를 사용하세요.");
@@ -17,7 +25,20 @@ if (!apiKey) {
 
 const { GoogleGenAI } = await import("@google/genai");
 const ai = new GoogleGenAI({ apiKey });
-const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+const MODELS = [
+  process.env.GEMINI_MODEL,
+  "gemini-2.5-flash-lite",
+  "gemini-2.5-flash",
+  "gemini-3.5-flash-lite",
+].filter(Boolean);
+
+async function generateWithModel(model, prompt) {
+  const res = await ai.models.generateContent({ model, contents: prompt });
+  const raw = res.text || "";
+  const json = raw.match(/\{[\s\S]*\}/);
+  if (!json) throw new Error("JSON parse fail");
+  return JSON.parse(json[0]);
+}
 
 const text = fs.readFileSync(path.join(ROOT, "src/lib/breeds.ts"), "utf8");
 const a = text.indexOf("const ROWS: Row[] = [");
@@ -65,14 +86,54 @@ JSON만 출력:
   }
 }`;
 
-  const res = await ai.models.generateContent({ model, contents: prompt });
-  const raw = res.text || "";
-  const json = raw.match(/\{[\s\S]*\}/);
-  if (!json) throw new Error("JSON parse fail: " + name);
-  return JSON.parse(json[0]);
+  let lastErr;
+  for (const model of MODELS) {
+    try {
+      return await generateWithModel(model, prompt);
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr || new Error("JSON parse fail: " + name);
 }
 
-const data = {};
+function sanitizeEntry(entry) {
+  return {
+    intro: String(entry.intro || "").trim(),
+    personality: String(entry.personality || "").trim(),
+    living: String(entry.living || "").trim(),
+    activity: String(entry.activity || "").trim(),
+    grooming: String(entry.grooming || "").trim(),
+    health: String(entry.health || "").trim(),
+    firstOwner: String(entry.firstOwner || "").trim(),
+    checklist: (entry.checklist || []).map((s) => String(s).trim()).filter(Boolean).slice(0, 8),
+    faq: (entry.faq || [])
+      .map((f) => ({ q: String(f.q || "").trim(), a: String(f.a || "").trim() }))
+      .filter((f) => f.q && f.a)
+      .slice(0, 5),
+    headingVariants: {
+      story: String(entry.headingVariants?.story || "").trim(),
+      beforeLiving: String(entry.headingVariants?.beforeLiving || "").trim(),
+      lifestyle: String(entry.headingVariants?.lifestyle || "").trim(),
+      health: String(entry.headingVariants?.health || "").trim(),
+    },
+  };
+}
+
+let seed = {};
+const seedPath = path.join(ROOT, "src/lib/sanchack-encyclopedia-data.ts");
+if (fs.existsSync(seedPath)) {
+  try {
+    const seedText = fs.readFileSync(seedPath, "utf8");
+    const a = seedText.indexOf("{");
+    const b = seedText.lastIndexOf("};");
+    seed = JSON.parse(seedText.slice(a, b + 1));
+  } catch {
+    /* ignore */
+  }
+}
+
+const data = { ...seed };
 for (const row of rows) {
   const name = row[0];
   if (done[name]) {
@@ -81,13 +142,18 @@ for (const row of rows) {
   }
   console.log("generating", name);
   try {
-    const entry = await generate(row);
+    const entry = sanitizeEntry(await generate(row));
     data[name] = entry;
     done[name] = entry;
     fs.writeFileSync(donePath, JSON.stringify(done, null, 2));
-    await new Promise((r) => setTimeout(r, 1200));
+    fs.writeFileSync(
+      seedPath,
+      `/** Gemini 생성 — generate-sanchack-encyclopedia.mjs */\nimport type { SanchackEncyclopedia } from "./sanchack-encyclopedia";\n\nexport const ENCYCLOPEDIA_DATA: Record<string, SanchackEncyclopedia> = ${JSON.stringify(data, null, 2)};\n`,
+      "utf8"
+    );
+    await new Promise((r) => setTimeout(r, 1500));
   } catch (e) {
-    console.error("fail", name, e.message);
+    console.error("fail", name, e.message?.slice?.(0, 120) || e.message);
   }
 }
 
